@@ -1,0 +1,8 @@
+# Virtual environment
+env/
+__pycache__/
+*.pyc
+db.sqlite3  # (if you use SQLite)
+
+# Other files
+*.log
