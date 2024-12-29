@@ -6,7 +6,7 @@
    git clone https://github.com/nezhanour/library_management_system_api.git
 
 2. Navigate to the project folder:
-   cd library_management_system
+   cd library_management_system_api
 
 3. Create and activate a virtual environment:
    python -m venv env
