@@ -57,5 +57,7 @@ This project is a Django-based API for managing library operations, including us
 
   - POST /loans/checkout/ - Check out a book by a user.
   - POST /loans/return/ - Return a book.
-  - Contributing
-  - Feel free to open issues and submit pull requests.
+
+## Contributing
+
+Feel free to open issues and submit pull requests.
