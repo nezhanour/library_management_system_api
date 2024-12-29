@@ -34,3 +34,28 @@ This project is a Django-based API for managing library operations, including us
 
 5. Run the development server:
    python manage.py runserver
+
+## API Endpoints
+
+- **User Endpoints**
+
+  - POST /users/ - Create a new user (register).
+  - GET /users/ - Get a list of all users.
+  - GET /users/{id}/ - Get details of a specific user by ID.
+  - PUT /users/{id}/ - Update user information.
+  - DELETE /users/{id}/ - Delete a user account.
+
+- **Book Endpoints**
+
+  - POST /books/ - Add a new book to the system.
+  - GET /books/ - Get a list of all books (with optional filtering).
+  - GET /books/{id}/ - Get details of a specific book by ID.
+  - PUT /books/{id}/ - Update book information.
+  - DELETE /books/{id}/ - Remove a book from the system.
+
+- **Loan Endpoints**
+
+  - POST /loans/checkout/ - Check out a book by a user.
+  - POST /loans/return/ - Return a book.
+  - Contributing
+  - Feel free to open issues and submit pull requests.
