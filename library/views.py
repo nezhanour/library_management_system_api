@@ -4,6 +4,7 @@ from rest_framework.decorators import action
 from .models import Book, Loan
 from .serializers import BookSerializer, LoanSerializer
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 # Book ViewSet
 class BookViewSet(viewsets.ModelViewSet):

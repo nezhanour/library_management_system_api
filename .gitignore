@@ -6,3 +6,6 @@ db.sqlite3  # (if you use SQLite)
 
 # Other files
 *.log
+
+# just some imgs
+*.PNG
