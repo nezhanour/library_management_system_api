@@ -4,15 +4,18 @@ from rest_framework.decorators import action
 from .models import Book, User, Loan
 from .serializers import BookSerializer, UserSerializer, LoanSerializer
 from rest_framework.permissions import IsAuthenticated
+from django.utils import timezone
+from rest_framework import status
 
 # Book ViewSet
 class BookViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
+    permission_classes = [IsAuthenticated]
 
     @action(detail=False, methods=['get'], url_path='available')
     def available_books(self, request):
-        available_books = Book.objects.filter(copies_available__gt=0)
+        available_books = Book.objects.filter(number_of_copies__gt=0)
         serializer = self.get_serializer(available_books, many=True)
         return Response(serializer.data)
 
@@ -28,23 +31,43 @@ class LoanViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['post'], url_path='check-out')
     def check_out_book(self, request, pk=None):
-        user = request.user
-        book = self.get_object()
-        if book.copies_available > 0:
-            Transaction.objects.create(user=user, book=book)
-            book.copies_available -= 1
+        book = Book.objects.get(id=pk)  # Get the book by its ID (from URL)
+        user = request.user  # Get the user from the request (authenticated user)
+
+        # Check if the book has available copies
+        if book.number_of_copies > 0:
+            # Create a loan record for the user
+            loan = Loan.objects.create(
+                user=user,
+                book=book,
+                checked_out_date=timezone.now(),
+                is_returned=False  # Ensure it's False when checked out
+            )
+
+            # Decrease the available copies of the book
+            book.number_of_copies -= 1
             book.save()
-            return Response({'message': 'Book checked out successfully.'})
-        return Response({'message': 'No copies available.'}, status=400)
+
+            return Response({'message': 'Book checked out successfully.', 'loan_id': loan.id}, status=status.HTTP_200_OK)
+
+        return Response({'message': 'No copies available for checkout.'}, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=True, methods=['post'], url_path='return')
     def return_book(self, request, pk=None):
-        transaction = self.get_object()
-        if not transaction.is_returned:
-            transaction.is_returned = True
-            transaction.return_date = timezone.now()
-            transaction.save()
-            transaction.book.copies_available += 1
-            transaction.book.save()
-            return Response({'message': 'Book returned successfully.'})
-        return Response({'message': 'Book already returned.'}, status=400)
+        loan = self.get_object()
+
+        # Check if the loan has already been returned
+        if loan.is_returned:
+            return Response({'message': 'Book already returned.'}, status=400)
+
+        # Proceed with returning the book
+        loan.is_returned = True
+        loan.return_date = timezone.now()
+        loan.save()
+
+        # Increment the available copies of the book
+        loan.book.number_of_copies += 1
+        loan.book.save()
+
+        return Response({'message': 'Book returned successfully.'})
+
