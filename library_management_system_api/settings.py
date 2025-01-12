@@ -101,7 +101,7 @@ DATABASES = {
         'NAME': 'library',
         'USER': 'root',
         'PASSWORD': 'NMAbtsZO99@Nc',
-        'HOST': 'localhost',
+        'HOST': 'nezha5.mysql.pythonanywhere-services.com',
         'PORT': '3306',
     }
 }
